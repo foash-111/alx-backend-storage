@@ -1,5 +1,2 @@
 // count documents
-// db.school.count()
-// DeprecationWarning: Collection.count() is deprecated. Use countDocuments or estimatedDocumentCount.
-// 1
-db.school.countDocuments()
+db.school.count()
