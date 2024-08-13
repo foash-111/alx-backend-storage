@@ -1,0 +1,5 @@
+// Create Operations
+// Create or insert operations add new documents to a collection.
+// If the collection does not exist, create operations also create the collection.
+
+db.school.insert({'name': 'Holberton school'})
