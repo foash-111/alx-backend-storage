@@ -3,6 +3,7 @@
 
 
 def insert_school(mongo_collection, **kwargs):
+    """read from dictionary and insert into our table (collection)"""
     my_dict = {}
     for k, v in kwargs.items():
         my_dict[k] = v
