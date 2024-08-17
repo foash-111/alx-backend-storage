@@ -5,6 +5,16 @@
 import redis
 from uuid import uuid4
 from typing import Union, Optional, Callable
+from functools import wraps
+
+
+def count_calls(method):
+    """decorator"""
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        r = redis.Redis()
+        r.incr(method.__qualname__)
+    return wrapper
 
 
 class Cache:
@@ -13,6 +23,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float, None]) -> str:
         id = str(uuid4())
         self._redis.mset({id: data})
@@ -38,3 +49,7 @@ class Cache:
             return int(value)
         except ValueError:
             raise ValueError("can't convert into integer")
+
+    @count_calls
+    def counter(self):
+        return self._redis.incr('key')
