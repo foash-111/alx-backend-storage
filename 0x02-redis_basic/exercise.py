@@ -15,7 +15,7 @@ class Cache:
 
     def store(self, data: Union[str, bytes, int, float]) -> str:
         id = str(uuid4())
-        self._redis.mset({str(id): data})
+        self._redis.mset({id: data})
         return id
 
     def get(key: str, fn: Optional[Callable] = None) ->\
