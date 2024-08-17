@@ -10,10 +10,10 @@ from typing import Union
 class Cache:
     """base class"""
     def __init__(self) -> None:
-        self._redis = Redis()
-        self._redis.flushdb()
+        self.__redis = Redis()
+        self.__redis.flushdb()
 
     def store(self, data: Union[str, bytes, int, float]) -> str:
         id = str(uuid4())
-        self._redis.mset({str(id): data})
+        self.__redis.mset({str(id): data})
         return id
