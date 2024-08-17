@@ -4,7 +4,7 @@
 
 import redis
 from uuid import uuid4
-from typing import Union
+from typing import Union, Optional, Callable
 
 
 class Cache:
@@ -17,3 +17,25 @@ class Cache:
         id = str(uuid4())
         self._redis.mset({str(id): data})
         return id
+
+    def get(key: str, fn: Optional[Callable] = None) ->\
+            Union[bytes, int, str, float]:
+        """like redis get but return the value like we store it"""
+        r = redis.Redis()
+        value = r.get(key)
+        if value is None:
+            return None
+        elif fn is None:
+            return value
+        else:
+            converted_value = fn(value)
+        return converted_value
+
+    def get_str(value: bytes) -> str:
+        return str(value)
+
+    def get_int(value: bytes) -> int:
+        try:
+            return int(value)
+        except ValueError:
+            raise ValueError("can't convert into integer")
