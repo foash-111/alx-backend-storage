@@ -10,23 +10,17 @@ r = redis.Redis()
 
 
 def counter(method: Callable) -> Callable:
-    """Counter decorator to cache the result and count requests"""
+    """counter decorator"""
     @wraps(method)
-    def wrapper(url: str):
-        """Wrapper function"""
-        # Increment the count for the given URL
-        r.incr(f'count:{url}')
-        
-        # Check if the content is already cached
+    def wrapper(url):
+        """wrapper"""
         cached_page = r.get(url)
+        r.incr(f'count:{url}')
         if cached_page:
-            print(f"Returning cached page for {url}")
             return cached_page.decode('utf-8')
 
-        # Fetch and cache the page content
         html_page = method(url)
         r.setex(url, 10, html_page)
-        print(f"Cached page for {url} for 10 seconds")
         return html_page
     return wrapper
 
