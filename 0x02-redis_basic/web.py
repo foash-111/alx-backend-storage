@@ -12,12 +12,11 @@ r = redis.Redis()
 def counter(method: Callable) -> Callable:
     """counter decorator"""
     @wraps(method)
-    def wrapper(*args, **kwargs):
+    def wrapper(url):
         """wrapper"""
-        url = args[0]
         cached_page = r.get(url)
-        if not cached_page:
-            html_page = method(*args, **kwargs)
+        if cached_page:
+            html_page = method(url)
             r.setex(url, 10, html_page)
             return html_page
 
