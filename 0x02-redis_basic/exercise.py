@@ -22,11 +22,11 @@ def call_history(method: Callable) -> Callable:
     """decorator"""
     @wraps(method)
     def wrapper(*args, **kwargs):
-        r = redis.Redis()
+        self = args[0]
         output = method(*args, **kwargs)
-        r.rpush(f'{method.__qualname__}:inputs', str(args[1:]))
+        self._redis.rpush(f'{method.__qualname__}:inputs', str(args[1:]))
         # [1:] to skip the first parameter that passed which is 'self'
-        r.rpush(f'{method.__qualname__}:outputs', output)
+        self._redis.rpush(f'{method.__qualname__}:outputs', output)
         return output
     return wrapper
 
