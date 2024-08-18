@@ -12,8 +12,8 @@ def count_calls(method: Callable) -> Callable:
     """decorator"""
     @wraps(method)
     def wrapper(*args, **kwargs):
-        self = method.__self__
-        self._redis.incr(method.__qualname__)
+        r = redis.Redis()
+        r.incr(method.__qualname__)
         return method(*args, **kwargs)
     return wrapper
 
