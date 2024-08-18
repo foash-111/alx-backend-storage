@@ -14,13 +14,13 @@ def counter(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         """wrapper"""
+        r.incr(f'count:{url}')
         cached_page = r.get(url)
         if cached_page:
             return cached_page.decode('utf-8')
 
         html_page = method(url)
         r.setex(url, 10, html_page)
-        r.incr(f'count:{url}')
         return html_page
     return wrapper
 
