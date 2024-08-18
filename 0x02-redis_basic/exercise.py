@@ -14,7 +14,6 @@ def count_calls(method: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         r = redis.Redis()
         r.incr(method.__qualname__)
-        return method(*args, **kwargs)
     return wrapper
 
 
