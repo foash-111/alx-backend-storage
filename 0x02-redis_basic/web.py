@@ -10,6 +10,7 @@ def counter(method: Callable) -> Callable:
     """counter decorator"""
     @wraps(method)
     def wrapper(*args, **kwargs):
+        """wrapper"""
         r = redis.Redis()
         url = args[0]
         if not r.exists(f'count:{url}'):
@@ -27,4 +28,4 @@ def get_page(url: str) -> str:
     return data
 
 
-print(get_page('http://127.0.0.1:80'))
+print(get_page('http://slowwly.robertomurray.co.uk'))
