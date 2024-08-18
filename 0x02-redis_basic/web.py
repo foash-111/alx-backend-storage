@@ -16,12 +16,12 @@ def counter(method: Callable) -> Callable:
         """wrapper"""
         cached_page = r.get(url)
         if cached_page:
-            html_page = method(url)
-            r.setex(url, 10, html_page)
-            return html_page
+            return cached_page.decode('utf-8')
 
+        html_page = method(url)
+        r.setex(url, 10, html_page)
         r.incr(f'count:{url}')
-        return cached_page.decode('utf-8')
+        return html_page
     return wrapper
 
 
@@ -30,6 +30,3 @@ def get_page(url: str) -> str:
     """get the page data from its url"""
     response = requests.get(url)
     return response.text
-
-
-print(get_page('http://127.0.0.1:80'))
