@@ -8,25 +8,22 @@ from functools import wraps
 
 r = redis.Redis()
 
+
 def counter(method: Callable) -> Callable:
     """counter decorator"""
     @wraps(method)
     def wrapper(*args, **kwargs):
         """wrapper"""
         url = args[0]
-        # if not r.exists(f'count:{url}'):
-        #     r.setex(f'count:{url}', 10, 0)
-        # r.incr(f'count:{url}')
+        cached_page = r.get(url)
+        if not cached_page:
+            html_page = method(*args, **kwargs)
+            r.setex(url, 10, html_page)
+            r.incr(f'count:{url}')
+            return html_page
 
         r.incr(f'count:{url}')
-        cashed_data = r.get(f'{url}')
-        if cashed_data:
-            return cashed_data.decode('utf-8')
-        
-        
-        html_page =  method(*args, **kwargs)
-        r.setex(f'{url}', 10, html_page)
-        return html_page
+        return cached_page.decode('utf-8')
     return wrapper
 
 
