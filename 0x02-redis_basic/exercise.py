@@ -53,6 +53,7 @@ class Cache:
     @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float, None]) -> str:
+        """store the date with uuid as a key"""
         id = str(uuid4())
         self._redis.set(id, data)
         return id
@@ -70,9 +71,11 @@ class Cache:
         return converted_value
 
     def get_str(self, value: bytes) -> str:
+        """convert bytes data to a string"""
         return str(value)
 
     def get_int(self, value: bytes) -> int:
+        """convert bytes data to an integer"""
         try:
             return int(value)
         except ValueError:
