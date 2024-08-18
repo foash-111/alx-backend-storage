@@ -19,7 +19,6 @@ def counter(method: Callable) -> Callable:
         if not cached_page:
             html_page = method(*args, **kwargs)
             r.setex(url, 10, html_page)
-            r.incr(f'count:{url}')
             return html_page
 
         r.incr(f'count:{url}')
