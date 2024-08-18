@@ -12,8 +12,8 @@ def count_calls(method: Callable) -> Callable:
     """decorator"""
     @wraps(method)
     def wrapper(*args, **kwargs):
-        r = redis.Redis()
-        r.incr(method.__qualname__)
+        self = method.__self__
+        self._redis.incr(method.__qualname__)
         return method(*args, **kwargs)
     return wrapper
 
@@ -47,6 +47,7 @@ def replay(method: Callable):
 class Cache:
     """base class"""
     def __init__(self) -> None:
+        """doc"""
         self._redis = redis.Redis()
         self._redis.flushdb()
 
