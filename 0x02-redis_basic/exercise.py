@@ -23,8 +23,8 @@ def call_history(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(*args, **kwargs):
         r = redis.Redis()
-        r.rpush(f'{method.__qualname__}:inputs', str(args))
         output = method(*args, **kwargs)
+        r.rpush(f'{method.__qualname__}:inputs', str(args[1:]))
         r.rpush(f'{method.__qualname__}:outputs', output)
         return output
     return wrapper
@@ -63,7 +63,3 @@ class Cache:
             return int(value)
         except ValueError:
             raise ValueError("can't convert into integer")
-
-    @count_calls
-    def counter(self):
-        return self._redis.incr('key')
