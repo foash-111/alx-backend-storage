@@ -25,6 +25,7 @@ def call_history(method: Callable) -> Callable:
         r = redis.Redis()
         output = method(*args, **kwargs)
         r.rpush(f'{method.__qualname__}:inputs', str(args[1:]))
+        # [1:] to skip the first parameter that passed which is 'self'
         r.rpush(f'{method.__qualname__}:outputs', output)
         return output
     return wrapper
